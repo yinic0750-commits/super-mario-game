@@ -10,10 +10,12 @@
             background: #1a1a2e;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
             font-family: 'Arial', sans-serif;
-            overflow: hidden;
+            overflow-x: hidden;
+            padding: 10px 0 60px 0;
+            margin: 0;
         }
         .game-wrapper {
             position: relative;
@@ -23,9 +25,11 @@
         }
         canvas {
             display: block;
+            max-width: 100%;
             border-radius: 14px;
             background: #5c94fc;
             cursor: pointer;
+            touch-action: none;
         }
         .ui-overlay {
             position: absolute;
@@ -46,11 +50,12 @@
         }
         .controls-info {
             position: absolute;
-            bottom: -50px;
+            bottom: -42px;
             left: 0; right: 0;
             text-align: center;
             color: #aaa;
             font-size: 14px;
+            white-space: nowrap;
         }
         .controls-info kbd {
             background: #333;
@@ -163,6 +168,19 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const W = 800, H = 450;
+canvas.width = W;
+canvas.height = H;
+
+// 自适应缩放
+function resizeCanvas() {
+    const maxW = window.innerWidth - 20;
+    const maxH = window.innerHeight - 20;
+    const scale = Math.min(1, maxW / W, maxH / H);
+    canvas.style.width = Math.floor(W * scale) + 'px';
+    canvas.style.height = Math.floor(H * scale) + 'px';
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
 
 // ---- DOM refs ----
 const scoreSpan = document.getElementById('scoreDisplay');
@@ -205,10 +223,10 @@ function initGame() {
 
     // ---- 平台 ----
     game.platforms = [
-        // 地面
+        // 地面 (连续无间隙)
         { x: 0, y: 390, w: 1400, h: 60 },
-        { x: 1480, y: 390, w: 300, h: 60 },
-        { x: 1860, y: 390, w: 1340, h: 60 },
+        { x: 1400, y: 390, w: 500, h: 60 },
+        { x: 1900, y: 390, w: 1300, h: 60 },
         // 浮空平台
         { x: 350, y: 280, w: 160, h: 20 },
         { x: 600, y: 210, w: 120, h: 20 },
